@@ -11,6 +11,9 @@ const ACHIEVEMENTS = [
   ["forbidden","🚨 I Saw the Forbidden Fukukitaru","Trigger the 1-in-1000 forbidden event.",s=>s.forbidden],
 ];
 
+// Default plush image path (change this file under static/ to replace the default)
+const DEFAULT_PLUSH_SRC = "/static/default-plush.jpg";
+
 let state = JSON.parse(localStorage.getItem("fukukitaru_state") || "{}");
 Object.assign(state,{fortunes:0,chats:0,summons:0,plush:0,suspicious:false,rare:false,forbidden:false,sessions:0},state);
 state.history = state.history || [];
@@ -58,10 +61,10 @@ function summon(){
   state.summons++; state.plush++;
   document.getElementById("plushOverlay").classList.add("show");
   const zone=document.getElementById("plushZone");
-  zone.innerHTML=`<div class="plush-mini"><img src="/static/fukukitaru_plush.png" alt="Matikanefukukitaru plush" onerror="this.style.display='none';this.parentElement.classList.add('fallback')}></div><p>SHIRAOKI-SAMA HAS ARRIVED.</p>`;
+  zone.innerHTML = `<div class="plush-mini"><img src="${DEFAULT_PLUSH_SRC}" alt="Matikanefukukitaru plush" onerror="this.style.display='none';this.parentElement.classList.add('fallback')"></div>`;
   save(); unlockCheck(before);
 }
-function hidePlush(){document.getElementById("plushOverlay").classList.remove("show")}
+function hidePlush(){document.getElementById("plushOverlay").classList.remove("show")} 
 function suspiciousButton(){
   const before=ACHIEVEMENTS.filter(([id,n,d,fn])=>fn(state)).map(x=>x[0]);
   state.suspicious=true; save(); unlockCheck(before); toast("You were warned.");
@@ -97,7 +100,7 @@ function renderHistory(){
   el.innerHTML=state.history.map(x=>`<div class="history-item"><strong>${escapeHtml(x.title)}</strong><span>${escapeHtml(x.text)}</span><small>${escapeHtml(x.time)}</small></div>`).join("");
 }
 function clearHistory(){state.history=[];save();renderHistory();toast("Your fortune history has been erased. The stars remember.");}
-function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function escapeHtml(s){return s.replace(/[&<>\"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
 async function dailyLuck(){
   try{
     const r=await fetch("/api/daily-luck"); const x=await r.json();
