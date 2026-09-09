@@ -12,8 +12,7 @@ const ACHIEVEMENTS = [
 ];
 
 // Default plush image path (change this file under static/ to replace the default)
-// Using the image at the repo root: /images.jpeg (you said images.jpeg is at the repo root)
-const DEFAULT_PLUSH_SRC = "/images.jpeg";
+const DEFAULT_PLUSH_SRC = "/static/images.jpeg";
 
 let state = JSON.parse(localStorage.getItem("fukukitaru_state") || "{}");
 Object.assign(state,{fortunes:0,chats:0,summons:0,plush:0,suspicious:false,rare:false,forbidden:false,sessions:0},state);
