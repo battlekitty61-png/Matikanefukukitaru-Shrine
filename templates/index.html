@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Matikanefukukitaru Shrine 🍀</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="stars"></div>
+<header class="hero">
+  <div class="sigils">🔮　🐴　🍀　✨</div>
+  <h1>Matikanefukukitaru Shrine</h1>
+  <p>A completely legitimate source of fortune, destiny, and questionable advice.</p>
+</header>
+<main>
+<section class="hero-card">
+  <div class="hero-copy">
+    <span class="eyebrow">WELCOME, FORTUNE SEEKER</span>
+    <h2>Have you come to consult the stars?</h2>
+    <p>Matikanefukukitaru has been waiting. Probably. Ask a question, receive a prophecy, summon Shiraoki-sama, and uncover the shrine's secrets.</p>
+    <button class="primary" onclick="getFortune()">🔮 LET FUKUKITARU DECIDE MY FATE</button>
+  </div>
+  <div class="portrait" aria-label="Fukukitaru decorative portrait">🍀</div>
+</section>
+<div class="grid">
+<section class="card fortune-card">
+  <div class="section-title"><span>🔮</span><div><h2>Fortune Machine</h2><small>The stars are definitely qualified.</small></div></div>
+  <div id="fortune" class="fortune">Press the button. The stars await.</div>
+  <div class="actions"><button class="primary" onclick="getFortune()">CONSULT THE STARS</button><button class="ghost" onclick="suspiciousButton()">DO NOT PRESS THIS</button></div>
+</section>
+<section class="card summon-card">
+  <div class="section-title"><span>🧸</span><div><h2>Summon Shiraoki-sama</h2><small>Perform the totally normal ritual.</small></div></div>
+  <div id="plushZone" class="plush-zone"><div class="plush-placeholder">Shiraoki-sama is currently somewhere else.</div></div>
+  <button class="gold full" onclick="summon()">✨ SUMMON SHIRAOKI-SAMA</button>
+</section>
+<section class="card chat-card">
+  <div class="section-title"><span>💬</span><div><h2>Ask Fukukitaru</h2><small>Her answers are scientifically mysterious.</small></div></div>
+  <div id="messages" class="messages"><div class="msg bot">Hello! I am Matikanefukukitaru! Ask me anything! I shall consult the stars! Probably!</div></div>
+  <div class="chatbar"><input id="chatInput" maxlength="1000" placeholder="Ask Fukukitaru something..." onkeydown="if(event.key==='Enter')sendChat()"><button class="primary" onclick="sendChat()">ASK!</button></div>
+</section>
+<section class="card luck-card">
+  <div class="section-title"><span>🍀</span><div><h2>Today's Luck</h2><small>A new prophecy each day.</small></div></div>
+  <div class="luck-number" id="luckNumber">--%</div><div class="luck-bar"><div id="luckFill"></div></div><p id="luckMessage">The stars are calculating...</p>
+</section>
+<section class="card achievements-card">
+  <div class="section-title"><span>🏆</span><div><h2>Achievements</h2><small id="achievementCount">0 / 10 unlocked</small></div></div><div id="achievements" class="achievements"></div>
+</section>
+<section class="card history-card">
+  <div class="section-title"><span>📜</span><div><h2>Fortune History</h2><small>Your browser remembers your destiny.</small></div></div><div id="history" class="history"></div><button class="ghost" onclick="clearHistory()">FORGET MY DESTINY</button>
+</section>
+</div>
+<section class="card cult-card" id="cultist"><span class="eyebrow">CLASSIFIED</span><h2>🍀 Fukukitaru's Highly Official Cultist Mode</h2><p>Click the four little sigils at the top of the page in the correct mysterious order.</p><p id="cultStatus">The spirits are watching...</p></section>
+</main>
+<footer>Made with excessive admiration for Matikanefukukitaru. 🍀</footer>
+<div id="toast" class="toast"></div>
+<div id="plushOverlay" class="plush-overlay" onclick="hidePlush()"><div class="plush-popup" onclick="event.stopPropagation()"><button class="close" onclick="hidePlush()">×</button><div class="big-plush"><img src="/static/fukukitaru_plush.png" alt="Matikanefukukitaru plush" onerror="this.style.display='none';this.parentElement.classList.add('fallback')"></div><h2>SHIRAOKI-SAMA HAS ARRIVED.</h2><p>The ritual was successful. The plush has judged you favorably.</p></div></div>
+<div id="forbidden" class="forbidden"><div><div class="forbidden-symbol">✦</div><h2>YOU WERE NOT SUPPOSED TO SEE THIS.</h2><p>LUCK LEVEL: 9999</p><p>The stars have noticed you.</p><button class="primary" onclick="closeForbidden()">ACCEPT YOUR DESTINY</button></div></div>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
