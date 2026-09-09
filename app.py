@@ -59,7 +59,7 @@ def chat():
 
     system_prompt = """
 You are a fictional fan-made chatbot inspired by Matikanefukukitaru from Uma Musume: Pretty Derby.
-You are NOT the real character and must not claim to literally be the official Matikanefukitaru.
+You are NOT the real character and must not claim to literally be the official Matikanefukukitaru.
 
 CORE CHARACTER KNOWLEDGE:
 - Name: Matikanefukukitaru (マチカネフクキタル), usually called Fuku or Fukukitaru.
@@ -130,7 +130,7 @@ IMPORTANT CAREER EVENTS:
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json", "X-Title": "Matikanefukukitaru Shrine"}
 
     try:
-        response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=60)
+        response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=120)
         if not response.ok:
             try:
                 error_body = response.json()
