@@ -36,8 +36,18 @@
 </section>
 <section class="card chat-card">
   <div class="section-title"><span>💬</span><div><h2>Ask Fukukitaru</h2><small>Her answers are scientifically mysterious.</small></div></div>
-  <div id="messages" class="messages"><div class="msg bot">Hello! I am Matikanefukukitaru! Ask me anything! I shall consult the stars! Probably!</div></div>
-  <div class="chatbar"><input id="chatInput" maxlength="1000" placeholder="Ask Fukukitaru something..." onkeydown="if(event.key==='Enter')sendChat()"><button class="primary" onclick="sendChat()">ASK!</button></div>
+  <div id="messages" class="messages" aria-live="polite"><div class="msg bot">Hello! I am Matikanefukukitaru! Ask me anything! I shall consult the stars! Probably!</div></div>
+
+  <!-- AI loading indicator -->
+  <div id="aiLoader" class="ai-loader" aria-hidden="true" role="status">
+    <div class="spinner" aria-hidden="true"></div>
+    <span class="loader-text">Fukukitaru is consulting the stars…</span>
+  </div>
+
+  <div class="chatbar">
+    <input id="chatInput" maxlength="1000" placeholder="Ask Fukukitaru something..." onkeydown="if(event.key==='Enter')sendChat()">
+    <button id="sendButton" class="primary" onclick="sendChat()">ASK!</button>
+  </div>
 </section>
 <section class="card luck-card">
   <div class="section-title"><span>🍀</span><div><h2>Today's Luck</h2><small>A new prophecy each day.</small></div></div>
@@ -52,9 +62,9 @@
 </div>
 <section class="card cult-card" id="cultist"><span class="eyebrow">CLASSIFIED</span><h2>🍀 Fukukitaru's Highly Official Cultist Mode</h2><p>Click the four little sigils at the top of the page in the correct mysterious order.</p><p id="cultStatus">The spirits are watching...</p></section>
 </main>
-<footer>Made with excessive admiration for Matikanefukitaru. 🍀</footer>
+<footer>Made with excessive admiration for Matikanefukukitaru. 🍀</footer>
 <div id="toast" class="toast"></div>
-<div id="plushOverlay" class="plush-overlay" onclick="hidePlush()"><div class="plush-popup" onclick="event.stopPropagation()"><button class="close" onclick="hidePlush()">×</button><div class="big-plush"><img src="/images.jpeg" alt="Matikanefukukitaru plush" onerror="this.style.display='none';this.parentElement.classList.add('fallback')"></div><h2>SHIRAOKI-SAMA HAS ARRIVED.</h2><p>The ritual was successful. The plush has judged you favorably.</p></div></div>
+<div id="plushOverlay" class="plush-overlay" onclick="hidePlush()"><div class="plush-popup" onclick="event.stopPropagation()"><button class="close" onclick="hidePlush()">×</button><div class="big-plush"><img src="/static/images.jpeg" alt="Matikanefukukitaru plush" onerror="this.style.display='none';this.parentElement.classList.add('fallback')"></div><h2>SHIRAOKI-SAMA HAS ARRIVED.</h2><p>The ritual was successful. The plush has judged you favorably.</p></div></div>
 <div id="forbidden" class="forbidden"><div><div class="forbidden-symbol">✦</div><h2>YOU WERE NOT SUPPOSED TO SEE THIS.</h2><p>LUCK LEVEL: 9999</p><p>The stars have noticed you.</p><button class="primary" onclick="closeForbidden()">ACCEPT YOUR DESTINY</button></div></div>
 <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
