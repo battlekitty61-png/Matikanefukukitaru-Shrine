@@ -1,150 +1,29 @@
-const ACHIEVEMENTS = [
-  ["beginner","🍀 Beginner's Luck","Ask Fukukitaru for your first fortune.",s=>s.fortunes>=1],
-  ["seeker","🔮 The Seeker","Receive 10 fortunes.",s=>s.fortunes>=10],
-  ["chatty","💬 Fortune Teller's Friend","Have 10 conversations with Fukukitaru.",s=>s.chats>=10],
-  ["summoner","🧸 Shiraoki-sama's Disciple","Summon Shiraoki-sama.",s=>s.summons>=1],
-  ["plush","✨ Plush Witness","Make the plush appear 5 times.",s=>s.plush>=5],
-  ["paranoia","👁️ Paranoia","Click every suspicious button.",s=>s.suspicious],
-  ["destiny","🌌 The Stars Have Spoken","Receive the ultra-rare forbidden fortune.",s=>s.rare],
-  ["dedicated","🐎 Fukukitaru's Disciple","Receive 50 fortunes.",s=>s.fortunes>=50],
-  ["visitor","🏠 Regular Visitor","Visit the shrine on 5 separate sessions.",s=>s.sessions>=5],
-  ["forbidden","🚨 I Saw the Forbidden Fukukitaru","Trigger the 1-in-1000 forbidden event.",s=>s.forbidden],
-];
-
-// Default plush image path (change this file under static/ to replace the default)
-const DEFAULT_PLUSH_SRC = "/static/images.jpeg";
-const RAW_PLUSH_SRC = "https://raw.githubusercontent.com/battlekitty61-png/Matikanefukukitaru-Shrine/main/static/images.jpeg";
-
-function plushImageFallback(img){
-  if(img.dataset.fallback) {
-    img.style.display="none";
-    img.parentElement.classList.add("fallback");
-    return;
-  }
-  img.dataset.fallback="1";
-  img.src=RAW_PLUSH_SRC+"?v=1";
-}
-
-let state = JSON.parse(localStorage.getItem("fukukitaru_state") || "{}");
-Object.assign(state,{fortunes:0,chats:0,summons:0,plush:0,suspicious:false,rare:false,forbidden:false,sessions:0},state);
-state.history = state.history || [];
-
-if(!sessionStorage.getItem("counted_session")){
-  state.sessions++;
-  sessionStorage.setItem("counted_session","1");
-  save();
-}
-
-function save(){ localStorage.setItem("fukukitaru_state",JSON.stringify(state)); renderAchievements(); }
-function toast(text){
-  const t=document.getElementById("toast"); t.textContent=text; t.classList.add("show");
-  clearTimeout(window.toastTimer); window.toastTimer=setTimeout(()=>t.classList.remove("show"),2800);
-}
-function renderAchievements(){
-  const el=document.getElementById("achievements"); el.innerHTML="";
-  let count=0;
-  ACHIEVEMENTS.forEach(([id,name,desc,fn])=>{
-    const unlocked=fn(state); if(unlocked) count++;
-    const d=document.createElement("div");
-    d.className="achievement "+(unlocked?"unlocked":"");
-    d.innerHTML=`<strong>${unlocked?"✓":"🔒"} ${name}</strong><span>${desc}</span>`;
-    el.appendChild(d);
-  });
-  document.getElementById("achievementCount").textContent=`${count} / 10 unlocked`;
-}
-function unlockCheck(before){
-  const now=ACHIEVEMENTS.filter(([id,n,d,fn])=>fn(state));
-  const old=before || [];
-  now.forEach(([id,name])=>{ if(!old.includes(id)) toast("🏆 Achievement unlocked: "+name); });
-}
-async function getFortune(){
-  const before=ACHIEVEMENTS.filter(([id,n,d,fn])=>fn(state)).map(x=>x[0]);
-  state.fortunes++;
-  const r=await fetch("/api/fortune"); const x=await r.json();
-  document.getElementById("fortune").innerHTML=`<strong>${x.title}</strong><p>${x.text}</p>`;
-  state.history.unshift({title:x.title,text:x.text,time:new Date().toLocaleString()});
-  state.history=state.history.slice(0,12);
-  if(x.rare){state.rare=true; dramatic("🌌 The stars have spoken...");}
-  save(); renderHistory(); unlockCheck(before);
-}
-function summon(){
-  const before=ACHIEVEMENTS.filter(([id,n,d,fn])=>fn(state)).map(x=>x[0]);
-  state.summons++; state.plush++;
-  document.getElementById("plushOverlay").classList.add("show");
-  const zone=document.getElementById("plushZone");
-  zone.innerHTML = `<div class="plush-mini"><img src="${DEFAULT_PLUSH_SRC}" alt="Matikanefukukitaru plush" onerror="plushImageFallback(this)"></div>`;
-  const big=document.querySelector(".big-plush");
-  if(big){
-    big.innerHTML=`<img src="${DEFAULT_PLUSH_SRC}" alt="Matikanefukukitaru plush" onerror="plushImageFallback(this)">`;
-  }
-  save(); unlockCheck(before);
-}
-function hidePlush(){document.getElementById("plushOverlay").classList.remove("show")} 
-function suspiciousButton(){
-  const before=ACHIEVEMENTS.filter(([id,n,d,fn])=>fn(state)).map(x=>x[0]);
-  state.suspicious=true; save(); unlockCheck(before); toast("You were warned.");
-}
-let chatHistory = [];
-async function sendChat(){
-  const input=document.getElementById("chatInput"); const text=input.value.trim(); if(!text)return;
-  addMessage(text,"user"); input.value="";
-  const before=ACHIEVEMENTS.filter(([id,n,d,fn])=>fn(state)).map(x=>x[0]);
-  state.chats++; save();
-  const previous = chatHistory.slice(-12);
-  chatHistory.push({role:"user",content:text});
-  try{
-    const r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:text,history:previous})});
-    const x=await r.json();
-    const reply=x.reply || "The stars have gone strangely quiet... Please try again!";
-    chatHistory.push({role:"assistant",content:reply});
-    chatHistory=chatHistory.slice(-12);
-    addMessage(reply,"bot");
-  }catch(e){
-    chatHistory.pop();
-    addMessage("The spirits are having connection trouble! Please try again!","bot");
-  }
-  unlockCheck(before);
-}
-function addMessage(text,who){
-  const m=document.getElementById("messages"); const d=document.createElement("div");
-  d.className="msg "+who; d.textContent=text; m.appendChild(d); m.scrollTop=m.scrollHeight;
-}
-function renderHistory(){
-  const el=document.getElementById("history");
-  if(!state.history.length){el.innerHTML="<p class='muted'>No fortunes recorded yet. Your destiny is blank.</p>";return}
-  el.innerHTML=state.history.map(x=>`<div class="history-item"><strong>${escapeHtml(x.title)}</strong><span>${escapeHtml(x.text)}</span><small>${escapeHtml(x.time)}</small></div>`).join("");
-}
-function clearHistory(){state.history=[];save();renderHistory();toast("Your fortune history has been erased. The stars remember.");}
-function escapeHtml(s){return s.replace(/[&<>\"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
-async function dailyLuck(){
-  try{
-    const r=await fetch("/api/daily-luck"); const x=await r.json();
-    let displayed=x.value;
-    document.getElementById("luckNumber").textContent=displayed+"%";
-    document.getElementById("luckFill").style.width=displayed+"%";
-    document.getElementById("luckMessage").textContent =
-      displayed>=90?"THE STARS ARE ABSOLUTELY SCREAMING YES!":
-      displayed>=70?"A highly fortunate day!":
-      displayed>=45?"Moderate luck. Proceed with confidence!":
-      "The stars are being mysterious today.";
-  }catch(e){}
-}
-function dramatic(text){ document.body.classList.add("dramatic"); toast(text); setTimeout(()=>document.body.classList.remove("dramatic"),1300); }
-function forbiddenEvent(){
-  if(Math.random()<0.001){
-    const before=ACHIEVEMENTS.filter(([id,n,d,fn])=>fn(state)).map(x=>x[0]);
-    state.forbidden=true; save(); document.getElementById("forbidden").classList.add("show"); unlockCheck(before);
-  }
-}
-function closeForbidden(){document.getElementById("forbidden").classList.remove("show")}
-const sigils=["🔮","🐴","🍀","✨"]; let sigilClicks=[];
-document.querySelector(".sigils").addEventListener("click",e=>{
-  const s=[...e.target.textContent].find(x=>sigils.includes(x)); if(!s)return;
-  sigilClicks.push(s); sigilClicks=sigilClicks.slice(-4);
-  if(sigilClicks.join("")==="🔮🐴🍀✨"){
-    document.getElementById("cultist").classList.add("revealed");
-    document.getElementById("cultStatus").textContent="🍀 CULTIST MODE UNLOCKED. The stars approve of your devotion.";
-    toast("🍀 You have discovered the secret mode.");
-  }
-});
-renderAchievements(); renderHistory(); dailyLuck(); forbiddenEvent();
+const A=[
+["beginner","🍀 Beginner's Luck","Get your first fortune.",s=>s.fortunes>=1],["seeker","🔮 The Seeker","Get 10 fortunes.",s=>s.fortunes>=10],["chatty","💬 Fortune Teller's Friend","Chat 10 times.",s=>s.chats>=10],["summoner","🧸 Shiraoki's Disciple","Summon Shiraoki-sama.",s=>s.summons>=1],["plush","✨ Plush Witness","Summon the plush 5 times.",s=>s.plush>=5],["paranoia","👁️ Paranoia","Press the suspicious button.",s=>s.suspicious],["destiny","🌌 The Stars Have Spoken","Trigger a rare fortune.",s=>s.rare],["dedicated","🐎 Fukukitaru's Disciple","Get 50 fortunes.",s=>s.fortunes>=50],["visitor","🏠 Regular Visitor","Visit in 5 sessions.",s=>s.sessions>=5],["forbidden","🚨 Forbidden Fukukitaru","Trigger the forbidden event.",s=>s.forbidden],["nyaa","🐱 Nyaa-san Approved","Ask Nyaa-san 3 times.",s=>s.nyaa>=3],["daruma","🪆 The Eye Is Open","Make 3 wishes.",s=>s.daruma>=3],["gods","🎴 Fate in Seven Pieces","Choose a fortune card.",s=>s.godCard],["camera","📷 Say Cheese","Use the Cursed Camera.",s=>s.camera],["cabinet","🗄️ WHAT DID YOU DO?","Open the suspicious cabinet.",s=>s.cabinet]];
+const DEFAULT_PLUSH_SRC="/static/images.jpeg",RAW_PLUSH_SRC="https://raw.githubusercontent.com/battlekitty61-png/Matikanefukukitaru-Shrine/main/static/images.jpeg";
+const GRADES=[["大吉","GREAT FORTUNE"],["中吉","MODERATE FORTUNE"],["小吉","SMALL FORTUNE"],["吉","GOOD FORTUNE"],["末吉","LATER FORTUNE"],["凶","BAD FORTUNE"]];
+const GODS=[["Ebisu","Prosperity","A lucky opportunity is approaching."],["Daikokuten","Abundance","Your efforts may bear excellent fruit."],["Bishamonten","Courage","Face the next challenge boldly!"],["Benzaiten","Creativity","A brilliant idea is hiding nearby."],["Fukurokuju","Wisdom","Listen carefully to a quiet omen."],["Jurojin","Longevity","Good fortune does not need to rush."],["Hotei","Joy","Something silly will improve your day."]];
+function plushImageFallback(img){if(img.dataset.fallback){img.style.display="none";img.parentElement.classList.add("fallback");return}img.dataset.fallback="1";img.src=RAW_PLUSH_SRC+"?v=1"}
+let state=JSON.parse(localStorage.getItem("fukukitaru_state")||"{}");Object.assign(state,{fortunes:0,chats:0,summons:0,plush:0,suspicious:false,rare:false,forbidden:false,sessions:0,nyaa:0,daruma:0,godCard:false,camera:false,cabinet:false},state);state.history=state.history||[];
+if(!sessionStorage.getItem("counted_session")){state.sessions++;sessionStorage.setItem("counted_session","1");save()}
+function save(){localStorage.setItem("fukukitaru_state",JSON.stringify(state));renderAchievements()}function unlocked(){return A.filter(x=>x[3](state)).map(x=>x[0])}function check(old){A.filter(x=>x[3](state)).forEach(x=>{if(!old.includes(x[0]))toast("🏆 Achievement discovered: "+x[1])})}function toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");clearTimeout(window.tt);window.tt=setTimeout(()=>e.classList.remove("show"),3000)}
+function renderAchievements(){const e=document.getElementById("achievements");if(!e)return;e.innerHTML="";let n=0;A.forEach(x=>{const ok=x[3](state);if(ok)n++;e.innerHTML+=`<div class="achievement ${ok?"unlocked":""}"><strong>${ok?"✓":"🔒"} ${x[1]}</strong><span>${x[2]}</span></div>`});const c=document.getElementById("achievementCount");if(c)c.textContent=`${n} / ${A.length} discovered`}
+function grade(){const g=GRADES[Math.floor(Math.random()*GRADES.length)],e=document.getElementById("fortuneGrade");if(e)e.innerHTML=`${g[0]}<small>${g[1]}</small>`}
+async function getFortune(){const old=unlocked();try{const r=await fetch("/api/fortune"),x=await r.json();if(!r.ok)throw 0;state.fortunes++;grade();document.getElementById("fortune").innerHTML=`<strong>${esc(x.title||"A Mysterious Omen")}</strong><p>${esc(x.text||"The stars are strangely quiet.")}</p>`;state.history.unshift({title:x.title||"A Mysterious Omen",text:x.text||"The stars are strangely quiet.",time:new Date().toLocaleString()});state.history=state.history.slice(0,12);if(x.rare){state.rare=true;dramatic("🌌 THE STARS HAVE SPOKEN!")}save();renderHistory();check(old);forbiddenEvent()}catch(e){toast("🔮 The stars are tangled. Please try again!")}}
+function summon(){const old=unlocked();state.summons++;state.plush++;document.getElementById("plushOverlay").classList.add("show");document.getElementById("plushZone").innerHTML=`<div class="plush-mini"><img src="${DEFAULT_PLUSH_SRC}" alt="Shiraoki-sama plush" onerror="plushImageFallback(this)"></div>`;const b=document.querySelector(".big-plush");if(b){b.innerHTML=`<img class="summon-image-pop" src="${DEFAULT_PLUSH_SRC}" alt="Shiraoki-sama plush" onerror="plushImageFallback(this)">`}save();check(old)}function hidePlush(){document.getElementById("plushOverlay").classList.remove("show")}
+function suspiciousButton(){const old=unlocked();state.suspicious=true;save();check(old);toast("You were warned. This is on the record.")}
+let chatHistory=[];function loader(v){const e=document.getElementById("aiLoader"),b=document.getElementById("sendButton");if(e)e.classList.toggle("show",v);if(b)b.disabled=v}
+async function askFukukitaru(text,show=true){if(!text)return;if(show)addMessage(text,"user");const prev=chatHistory.slice(-12);chatHistory.push({role:"user",content:text});loader(true);try{const r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:text,history:prev})}),x=await r.json();if(!r.ok)throw 0;const reply=x.reply||"The stars have gone strangely quiet...";chatHistory.push({role:"assistant",content:reply});chatHistory=chatHistory.slice(-12);addMessage(reply,"bot");return reply}catch(e){chatHistory.pop();addMessage("The spirits are having connection trouble! Please try again!","bot")}finally{loader(false)}}
+async function sendChat(){const i=document.getElementById("chatInput"),t=i.value.trim();if(!t)return;i.value="";const old=unlocked();state.chats++;save();await askFukukitaru(t);check(old)}function addMessage(t,w){const m=document.getElementById("messages"),d=document.createElement("div");d.className="msg "+w;d.textContent=t;m.appendChild(d);m.scrollTop=m.scrollHeight}
+async function explainCurrentFortune(){const f=document.getElementById("fortune")?.innerText||"nothing yet";const old=unlocked();state.chats++;save();addMessage("Why did this happen?","user");await askFukukitaru(`Explain this event in cheerful, superstitious Fukukitaru style. Be playful and brief: ${f}`,false);check(old)}
+function esc(s){return String(s).replace(/[&<>\"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}function renderHistory(){const e=document.getElementById("history");if(!e)return;if(!state.history.length){e.innerHTML="<p class='muted'>No fortunes recorded yet. Your destiny is blank.</p>";return}e.innerHTML=state.history.map(x=>`<div class="history-item"><strong>${esc(x.title)}</strong><span>${esc(x.text)}</span><small>${esc(x.time)}</small></div>`).join("")}function clearHistory(){state.history=[];save();renderHistory();toast("Your fortune history has been erased. The stars remember.")}
+async function dailyLuck(){try{const x=await(await fetch("/api/daily-luck")).json(),v=Math.max(0,Math.min(100,Number(x.value)||0));document.getElementById("luckNumber").textContent=v+"%";document.getElementById("luckFill").style.width=v+"%";document.getElementById("luckMessage").textContent=v>=90?"THE STARS ARE ABSOLUTELY SCREAMING YES!":v>=70?"A highly fortunate day!":v>=45?"Moderate luck. Proceed with confidence!":"The stars are being mysterious today.";document.getElementById("luckConfidence").textContent=["12%","37%","61%","89%","???"][Math.floor(Math.random()*5)];document.getElementById("raceOmen").textContent=["Trust the final stretch.","Watch the inside lane!","A late surge is favored.","Do not anger turn 3."][Math.floor(Math.random()*4)]}catch(e){}}
+function petNyaa(){const old=unlocked();state.nyaa++;const c=document.querySelector(".nyaa-cat");if(c){c.classList.remove("petted");void c.offsetWidth;c.classList.add("petted")}document.getElementById("nyaaText").textContent=["Nyaa-san has judged your fortune favorably. 👍","Nyaa-san blinked. This is apparently significant.","Nyaa-san detected a suspicious amount of luck.","Nyaa-san recommends a snack.","Nyaa-san has seen the future and refuses to explain it."][Math.floor(Math.random()*5)];save();check(old)}
+function paintDaruma(){const old=unlocked();state.daruma++;const d=document.getElementById("daruma");d.classList.remove("activated");void d.offsetWidth;d.classList.add("activated");if(state.daruma<3){d.textContent=state.daruma===1?"🪆👁️":"🪆👁️👁️";document.getElementById("darumaText").textContent=`Wish ${state.daruma}/3 recorded. The daruma is taking this seriously.`}else{d.textContent="🪆✨";document.getElementById("darumaText").textContent="THE DARUMA'S EYE IS OPEN. It knows what you wished for.";dramatic("🪆 The daruma has awakened!")}save();check(old)}
+function buildGodCards(){const e=document.getElementById("fortuneCards");GODS.forEach((g,i)=>{const b=document.createElement("button");b.className="fortune-card-choice";b.innerHTML=`🎴<span>${g[0]}</span>`;b.onclick=()=>chooseGod(i,b);e.appendChild(b)})}function chooseGod(i,b){const old=unlocked();state.godCard=true;document.querySelectorAll(".fortune-card-choice").forEach(x=>x.classList.remove("chosen"));b.classList.add("chosen");const g=GODS[i];document.getElementById("godResult").innerHTML=`<strong>${g[0]}</strong> · ${g[1]}<br>${Math.random()<.12?"Fukukitaru appears to have chosen this card for you. That is... unusual.":g[2]}`;save();check(old)}
+function cursedCamera(choice){const old=unlocked();state.camera=true;const e=document.getElementById("cameraText");if(choice==="photo")e.textContent=["The photograph developed normally. Suspicious.","FLASH! A mysterious green blur appeared.","The camera captured a fortune nobody remembers writing.","The photo is just a picture of the camera. Not reassuring."][Math.floor(Math.random()*4)];else e.textContent="You escaped the curse. Fukukitaru is proud of your tactical retreat.";save();check(old);toast(choice==="photo"?"📷 The camera has witnessed you.":"🏃 A wise decision... probably.")}
+function openCabinet(){const old=unlocked();state.cabinet=true;document.getElementById("cabinetText").textContent="Inside: 3 charms, 1 suspicious bell, a note reading 'DO NOT RING THIS', and an invoice addressed to the stars.";document.getElementById("secretCabinet").classList.add("revealed");save();check(old);dramatic("🗄️ You opened the cabinet. Why?")}
+function dramatic(t){document.body.classList.add("dramatic");toast(t);setTimeout(()=>document.body.classList.remove("dramatic"),1300)}function forbiddenEvent(){if(Math.random()<.001){const old=unlocked();state.forbidden=true;save();document.getElementById("forbidden").classList.add("show");check(old)}}function closeForbidden(){document.getElementById("forbidden").classList.remove("show")}
+const sigils=["🔮","🐴","🍀","✨"];let clicks=[];document.querySelector(".sigils")?.addEventListener("click",e=>{const s=[...e.target.textContent].find(x=>sigils.includes(x));if(!s)return;clicks.push(s);clicks=clicks.slice(-4);if(clicks.join("")==="🔮🐴🍀✨"){document.getElementById("cultist").classList.add("revealed");document.getElementById("cultStatus").textContent="🍀 CULTIST MODE UNLOCKED. The stars approve of your devotion.";toast("🍀 Secret mode discovered!")}});
+function randomMoment(){const x=["✨ Fukukitaru suddenly looks toward the sky. 'I sense something!'","🍀 A mysterious clover appeared. Nobody knows where it came from.","🔮 The crystal ball has no useful information at this time.","🐴 Somewhere nearby, a horse sneezed. Fukukitaru considers this an omen.","🏮 One lantern flickered. Fukukitaru has written it down.","📜 A fortune slip rustled despite there being no wind."];if(Math.random()<.7)toast(x[Math.floor(Math.random()*x.length)])}
+renderAchievements();renderHistory();buildGodCards();dailyLuck();forbiddenEvent();setTimeout(randomMoment,12000);setInterval(randomMoment,45000);
