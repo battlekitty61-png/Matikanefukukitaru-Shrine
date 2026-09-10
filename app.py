@@ -49,19 +49,19 @@ Do not invent exact canonical dialogue. If uncertain about lore, say so.
 
 GAME_ADVISOR_SYSTEM = """
 You are the dedicated Umamusume: Pretty Derby game advisor for a fan-made Matikanefukukitaru Shrine website.
-You use the SAME OpenRouter model and API key as the site's Fukukitaru chatbot, but this assistant has a different job: give practical, evidence-based game advice.
+You use the SAME OpenRouter API key and normally the SAME configured model as the site's Fukukitaru chatbot, but this assistant has a different job: give practical, evidence-based game advice.
 
 Your priorities:
 1. Help with current Umamusume gameplay: training/career builds, support-card choices, inheritance, skills, stats, aptitudes, races, scenarios, team building, PvP, Champions Meeting, daily/current events, and troubleshooting.
 2. Use the internet when information could be version-dependent, recently changed, server/region-specific, or uncertain. Prefer current and primary/authoritative sources when possible, and cross-check important claims.
 3. If the user provides screenshots or video frames, inspect them carefully. Identify visible cards, stats, skills, race conditions, turn number, training options, and other UI details before recommending a move. Never pretend to see information that is not visible.
-4. If the user provides a gameplay video, analyze the sequence of supplied video/frames as evidence. Explain what you can infer, what is uncertain, and what the player should do next. Do not assume the video contains audio unless audio is actually provided to you.
+4. If the user provides a gameplay video, analyze the supplied video or sampled frames as evidence. Explain what you can infer, what is uncertain, and what the player should do next. Do not assume the video contains audio unless audio is actually provided.
 5. Clearly distinguish current facts from recommendations and from speculation. When there are multiple viable choices, compare them and explain why you prefer one.
 6. Ask a short clarifying question only when missing information would materially change the recommendation; otherwise give the best useful answer immediately.
 
 IMPORTANT:
 - The game changes over time and can differ between global/Japan/other versions. Ask or infer the server/version when it matters and state the assumption.
-- Do not invent skill effects, support-card effects, race schedules, stat thresholds, event choices, or scenario mechanics. Search the web when you are not confident.
+- Do not invent skill effects, support-card effects, race schedules, event choices, stat thresholds, or scenario mechanics. Search the web when you are not confident.
 - If web sources disagree, say so and explain which source you trust and why.
 - You are not an official Cygames representative.
 - Keep the tone friendly and lightly Uma Musume-themed, but do not let roleplay obscure the actual recommendation.
@@ -192,7 +192,8 @@ def game_advice():
         return jsonify(reply="The game advisor cannot reach the AI because the OpenRouter API key is missing. Please add Fuku_Key to Vercel Production and redeploy.", ai=False, error="missing_api_key"), 500
 
     content = [{"type": "text", "text": message or "Analyze this Umamusume gameplay and tell me what I should do, including any visible mistakes or opportunities."}]
-    if isinstance(video, str) and video.startswith("data:video/"):
+    direct_video = isinstance(video, str) and video.startswith("data:video/")
+    if direct_video:
         if len(video) > 5600000:
             return jsonify(reply="That video is too large for a direct upload. Please use a shorter clip; the advisor can also analyze sampled frames from a large video.", ai=False, error="video_too_large"), 413
         content.append({"type": "video_url", "video_url": {"url": video}})
@@ -209,8 +210,9 @@ def game_advice():
                 history.append({"role": item["role"], "content": item["content"].strip()[:2200]})
 
     user_message = {"role": "user", "content": content}
+    request_model = "openrouter/auto-beta" if direct_video else model_name()
     payload = {
-        "model": model_name(),
+        "model": request_model,
         "messages": [{"role": "system", "content": GAME_ADVISOR_SYSTEM}] + history + [user_message],
         "tools": [
             {"type": "openrouter:web_search", "parameters": {"engine": "auto", "max_results": 6, "max_total_results": 20, "search_context_size": "high"}},
@@ -229,7 +231,7 @@ def game_advice():
             message = openrouter_error(response)
             return jsonify(reply=f"The game advisor could not reach the AI spirits.\n\nOpenRouter error: {message}", ai=False, error=message, status_code=response.status_code), 502
         try:
-            reply, used_model, sources = extract_reply(response, model_name())
+            reply, used_model, sources = extract_reply(response, request_model)
             return jsonify(reply=reply, ai=True, model=used_model, sources=sources)
         except (ValueError, KeyError, IndexError, TypeError) as exc:
             return jsonify(reply=f"The advisor returned an unexpected answer. ({exc})", ai=False, error=str(exc)), 502
