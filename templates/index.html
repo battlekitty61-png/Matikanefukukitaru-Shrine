@@ -3,59 +3,120 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Matikanefukukitaru Shrine 🍀</title>
+<title>Matikanefukukitaru's Fortune Tent 🍀</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 <div id="stars"></div>
-<header class="hero">
-  <div class="sigils">🔮　🐴　🍀　✨</div>
-  <h1>Matikanefukukitaru Shrine</h1>
-  <p>A completely legitimate source of fortune, destiny, and questionable advice.</p>
+<header class="hero tent-top">
+  <div class="tent-canopy"><span>🍀</span><span>🔮</span><span>🍀</span><span>🔮</span><span>🍀</span></div>
+  <div class="sigils" aria-label="mysterious sigils">🔮　🐴　🍀　✨</div>
+  <div class="lantern-row"><span>🏮</span><span>✦</span><span>🏮</span></div>
+  <h1>Matikanefukukitaru's Fortune Tent</h1>
+  <p>A completely legitimate source of fortune, destiny, charms, and questionable advice.</p>
 </header>
 <main>
-<section class="hero-card">
+<section class="hero-card fortune-tent-card">
   <div class="hero-copy">
-    <span class="eyebrow">WELCOME, FORTUNE SEEKER</span>
+    <span class="eyebrow">🔮 WELCOME, FORTUNE SEEKER 🔮</span>
     <h2>Have you come to consult the stars?</h2>
-    <p>Matikanefukukitaru has been waiting. Probably. Ask a question, receive a prophecy, summon Shiraoki-sama, and uncover the shrine's secrets.</p>
-    <button class="primary" onclick="getFortune()">🔮 LET FUKUKITARU DECIDE MY FATE</button>
+    <p>Step inside! Matikanefukukitaru has prepared an extremely professional fortune-telling experience. Please ignore any suspicious omens.</p>
+    <button class="primary big-action" onclick="getFortune()">🔮 LET FUKUKITARU DECIDE MY FATE</button>
   </div>
-  <div class="portrait" aria-label="Fukukitaru decorative portrait">🍀</div>
+  <div class="tent-charm-stack" aria-label="fortune tent charms"><div>🍀</div><div>🧿</div><div>🎴</div></div>
 </section>
+
+<div class="fortune-slip" id="fortuneSlip">
+  <div class="slip-ribbon">今日の運勢 · TODAY'S OMEN</div>
+  <div class="slip-inner">
+    <div class="fortune-kanji" id="fortuneGrade">?</div>
+    <div class="fortune" id="fortune"><strong>The stars are waiting.</strong><p>Pull your fortune and discover what fate has planned!</p></div>
+    <button class="gold big-action" onclick="getFortune()">✨ CONSULT THE STARS ✨</button>
+    <button class="tiny-action" onclick="explainCurrentFortune()">WHY DID THIS HAPPEN?</button>
+  </div>
+</div>
+
 <div class="grid">
-<section class="card fortune-card">
-  <div class="section-title"><span>🔮</span><div><h2>Fortune Machine</h2><small>The stars are definitely qualified.</small></div></div>
-  <div id="fortune" class="fortune">Press the button. The stars await.</div>
-  <div class="actions"><button class="primary" onclick="getFortune()">CONSULT THE STARS</button><button class="ghost" onclick="suspiciousButton()">DO NOT PRESS THIS</button></div>
-</section>
-<section class="card summon-card">
-  <div class="section-title"><span class="plush-icon"><img src="{{ url_for('static', filename='images.jpeg') }}" alt="Shiraoki-sama plush" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='https://raw.githubusercontent.com/battlekitty61-png/Matikanefukukitaru-Shrine/main/static/images.jpeg?v=1'}else{this.style.display='none';this.parentElement.classList.add('fallback')}"></span><div><h2>Summon Shiraoki-sama</h2><small>Perform the totally normal ritual.</small></div></div>
+<section class="card tent-panel summon-card">
+  <div class="section-title"><span class="plush-icon"><img src="{{ url_for('static', filename='images.jpeg') }}" alt="Shiraoki-sama plush" onerror="plushImageFallback(this)"></span><div><h2>Summon Shiraoki-sama</h2><small>Perform the totally normal ritual.</small></div></div>
   <div id="plushZone" class="plush-zone"><div class="plush-placeholder">Shiraoki-sama is currently somewhere else.</div></div>
   <button class="gold full" onclick="summon()">✨ SUMMON SHIRAOKI-SAMA</button>
 </section>
-<section class="card chat-card">
-  <div class="section-title"><span>💬</span><div><h2>Ask Fukukitaru</h2><small>Her answers are scientifically mysterious.</small></div></div>
+
+<section class="card tent-panel luck-card">
+  <div class="section-title"><span>🍀</span><div><h2>Fukukitaru's Luckometer™</h2><small>Scientifically questionable. Spiritually precise.</small></div></div>
+  <div class="luck-number" id="luckNumber">--%</div>
+  <div class="luck-bar"><div id="luckFill"></div></div>
+  <p id="luckMessage">The stars are calculating...</p>
+  <div class="luck-confidence">Measurement confidence: <strong id="luckConfidence">???</strong></div>
+</section>
+
+<section class="card tent-panel nyaa-card">
+  <div class="section-title"><span>🐱</span><div><h2>Nyaa-san's Omens</h2><small>Her judgment is final. Probably.</small></div></div>
+  <div id="nyaa" class="charm-display"><div class="nyaa-cat" onclick="petNyaa()">🐱</div><p id="nyaaText">Nyaa-san is watching.</p></div>
+  <button class="ghost full" onclick="petNyaa()">🐾 ASK NYAA-SAN</button>
+</section>
+
+<section class="card tent-panel daruma-card">
+  <div class="section-title"><span>🪆</span><div><h2>Daruma of Determination</h2><small>Give it an eye. Do not ask why.</small></div></div>
+  <div id="daruma" class="daruma" onclick="paintDaruma()">🪆</div>
+  <p id="darumaText">The daruma waits patiently.</p>
+  <button class="primary full" onclick="paintDaruma()">🎴 MAKE A WISH</button>
+</section>
+
+<section class="card tent-panel gods-card">
+  <div class="section-title"><span>🎴</span><div><h2>Seven Gods of Fortune</h2><small>Choose one card. Trust your instincts.</small></div></div>
+  <div id="fortuneCards" class="fortune-cards"></div>
+  <div id="godResult" class="god-result">The cards await your hand.</div>
+</section>
+
+<section class="card tent-panel camera-card">
+  <div class="section-title"><span>📷</span><div><h2>The Cursed Camera</h2><small>Fukukitaru strongly recommends caution.</small></div></div>
+  <div class="camera-box"><div class="camera-lens">◉</div><p id="cameraText">Something about this camera feels... spiritually complicated.</p></div>
+  <div class="actions"><button class="primary" onclick="cursedCamera('photo')">📸 TAKE THE PICTURE</button><button class="ghost" onclick="cursedCamera('run')">🏃 RUN AWAY</button></div>
+</section>
+
+<section class="card tent-panel race-card">
+  <div class="section-title"><span>🏇</span><div><h2>Fukukitaru's Racing Destiny</h2><small>The stars have opinions about the final stretch.</small></div></div>
+  <div class="race-track"><div class="race-lane"><span>🏇</span><i></i><b>FINISH</b></div></div>
+  <div class="race-stats"><div><small>Running Style</small><strong>Late Surge</strong></div><div><small>Favored</small><strong>Medium / Long</strong></div><div><small>Today's Omen</small><strong id="raceOmen">???</strong></div></div>
+</section>
+
+<section class="card tent-panel chat-card">
+  <div class="section-title"><span>💬</span><div><h2>Ask Fukukitaru</h2><small>Ask anything! I shall consult the stars!</small></div></div>
   <div id="messages" class="messages" aria-live="polite"><div class="msg bot">Hello! I am Matikanefukukitaru! Ask me anything! I shall consult the stars! Probably!</div></div>
   <div id="aiLoader" class="ai-loader" aria-hidden="true" role="status"><div class="spinner" aria-hidden="true"></div><span class="loader-text">Fukukitaru is consulting the stars…</span></div>
   <div class="chatbar"><input id="chatInput" maxlength="1000" placeholder="Ask Fukukitaru something..." onkeydown="if(event.key==='Enter')sendChat()"><button id="sendButton" class="primary" onclick="sendChat()">ASK!</button></div>
 </section>
-<section class="card luck-card">
-  <div class="section-title"><span>🍀</span><div><h2>Today's Luck</h2><small>A new prophecy each day.</small></div></div>
-  <div class="luck-number" id="luckNumber">--%</div><div class="luck-bar"><div id="luckFill"></div></div><p id="luckMessage">The stars are calculating...</p>
+
+<section class="card tent-panel guestbook-card">
+  <div class="section-title"><span>📜</span><div><h2>Guest Book: Reviews of the Tent</h2><small>Visitors have opinions. The stars have concerns.</small></div></div>
+  <div class="reviews">
+    <article class="review doto"><div class="review-avatar">🐴</div><div><strong>Meisho Doto</strong><span class="review-role">Very nervous visitor</span><p>“U-Um... Fukukitaru's fortune was really nice! I was just a little worried when the crystal ball started glowing... b-but it was probably fine!”</p><small>★ ★ ★ ★ ☆ · Would visit again after calming down.</small></div></article>
+    <article class="review palmer"><div class="review-avatar">🏄</div><div><strong>Mejiro Palmer</strong><span class="review-role">Definitely came for the vibes</span><p>“Yo, this tent is actually pretty chill! Got a fortune, got a charm, almost got recruited into a mystery ritual. Ten outta ten atmosphere!”</p><small>★ ★ ★ ★ ★ · The lanterns are fire.</small></div></article>
+    <article class="review helios"><div class="review-avatar">💖</div><div><strong>Daitaku Helios</strong><span class="review-role">Maximum energy consultant</span><p>“FUKUKITARU'S TENT IS SO HYPE!!! 🔥🔮✨ Fortune says GOOD VIBES ONLY! We gotta do this again like, RIGHT NOW!”</p><small>★ ★ ★ ★ ★ · Would bring the whole crew.</small></div></article>
+  </div>
+  <p class="review-note">Fan-made character-voice homages inspired by their personalities, not official quotations.</p>
 </section>
-<section class="card achievements-card">
-  <div class="section-title"><span>🏆</span><div><h2>Achievements</h2><small id="achievementCount">0 / 10 unlocked</small></div></div><div id="achievements" class="achievements"></div>
+
+<section class="card tent-panel achievements-card">
+  <div class="section-title"><span>🏆</span><div><h2>Omens & Achievements</h2><small id="achievementCount">0 / 15 discovered</small></div></div><div id="achievements" class="achievements"></div>
 </section>
-<section class="card history-card">
+
+<section class="card tent-panel history-card">
   <div class="section-title"><span>📜</span><div><h2>Fortune History</h2><small>Your browser remembers your destiny.</small></div></div><div id="history" class="history"></div><button class="ghost" onclick="clearHistory()">FORGET MY DESTINY</button>
 </section>
 </div>
-<section class="card cult-card" id="cultist"><span class="eyebrow">CLASSIFIED</span><h2>🍀 Fukukitaru's Highly Official Cultist Mode</h2><p>Click the four little sigils at the top of the page in the correct mysterious order.</p><p id="cultStatus">The spirits are watching...</p></section>
+
+<section class="card tent-panel classified-card" id="cultist"><span class="eyebrow">CLASSIFIED OMEN</span><h2>🍀 Fukukitaru's Highly Official Cultist Mode</h2><p>Click the four sigils at the top of the tent in the correct mysterious order.</p><p id="cultStatus">The spirits are watching...</p></section>
+
+<section class="card tent-panel secret-card" id="secretCabinet">
+  <span class="eyebrow">???</span><h2>🗄️ The Suspicious Charm Cabinet</h2><p id="cabinetText">There is definitely nothing interesting here.</p><button class="ghost" onclick="openCabinet()">DO NOT OPEN THE CABINET</button>
+</section>
 </main>
-<footer>Made with excessive admiration for Matikanefukukitaru. 🍀</footer>
+<footer>Made with excessive admiration for Matikanefukukitaru. 🍀 · The stars accept no responsibility for your decisions.</footer>
 <div id="toast" class="toast"></div>
-<div id="plushOverlay" class="plush-overlay" onclick="hidePlush()"><div class="plush-popup" onclick="event.stopPropagation()"><button class="close" onclick="hidePlush()">×</button><div class="big-plush"><img src="{{ url_for('static', filename='images.jpeg') }}" alt="Matikanefukukitaru plush" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='https://raw.githubusercontent.com/battlekitty61-png/Matikanefukukitaru-Shrine/main/static/images.jpeg?v=1'}else{this.style.display='none';this.parentElement.classList.add('fallback')}"></div><h2>SHIRAOKI-SAMA HAS ARRIVED.</h2><p>The ritual was successful. The plush has judged you favorably.</p></div></div>
+<div id="plushOverlay" class="plush-overlay" onclick="hidePlush()"><div class="plush-popup" onclick="event.stopPropagation()"><button class="close" onclick="hidePlush()">×</button><div class="big-plush"><img src="{{ url_for('static', filename='images.jpeg') }}" alt="Shiraoki-sama plush" onerror="plushImageFallback(this)"></div><h2>SHIRAOKI-SAMA HAS ARRIVED.</h2><p>The ritual was successful. The plush has judged you favorably.</p></div></div>
 <div id="forbidden" class="forbidden"><div><div class="forbidden-symbol">✦</div><h2>YOU WERE NOT SUPPOSED TO SEE THIS.</h2><p>LUCK LEVEL: 9999</p><p>The stars have noticed you.</p><button class="primary" onclick="closeForbidden()">ACCEPT YOUR DESTINY</button></div></div>
 <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
