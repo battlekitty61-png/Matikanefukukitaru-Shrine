@@ -5,6 +5,40 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Matikanefukukitaru Shrine 🍀</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>
+/* Custom animated Fukukitaru illustration — original vector artwork for the shrine */
+.fuku-character{width:230px;height:292px;bottom:54px}
+.fuku-svg{width:230px;height:292px;overflow:visible;display:block}
+.fuku-svg .fuku-float{transform-box:fill-box;transform-origin:center bottom;animation:fukuArtFloat 3.4s ease-in-out infinite}
+.fuku-svg .hair-swish{transform-box:fill-box;transform-origin:top center;animation:hairSway 3.8s ease-in-out infinite}
+.fuku-svg .ear-left,.fuku-svg .ear-right{transform-box:fill-box;transform-origin:bottom center;animation:earTwitch 5s ease-in-out infinite}
+.fuku-svg .ear-right{animation-delay:1.9s}
+.fuku-svg .arm-left{transform-box:fill-box;transform-origin:100% 50%;animation:armWave 4.8s ease-in-out infinite}
+.fuku-svg .arm-right{transform-box:fill-box;transform-origin:0 50%;animation:armWave 4.8s ease-in-out infinite reverse}
+.fuku-svg .star-eye{animation:starBlink 5.5s ease-in-out infinite}
+.fuku-svg .star-eye:nth-of-type(2){animation-delay:.18s}
+.fuku-svg .clover-charm{transform-box:fill-box;transform-origin:center;animation:charmSpin 7s linear infinite}
+.fuku-svg .ball-glow{animation:ballPulse 2.2s ease-in-out infinite}
+.fuku-svg .smile{transition:all .2s ease}
+.fuku-stage.good .fuku-svg .fuku-float{animation:fukuArtExcited .7s ease-in-out 2}
+.fuku-stage.bad .fuku-svg .fuku-float{animation:fukuArtWorry .45s ease-in-out 3}
+.fuku-stage.summon .fuku-svg .fuku-float{animation:fukuArtBow .8s ease-in-out}
+.fuku-stage.surprise .fuku-svg .fuku-float{animation:fukuArtSurprise .6s ease-in-out 2}
+.fuku-stage.good .fuku-svg .smile{stroke:#c15b58;stroke-width:4}
+.fuku-stage.bad .fuku-svg .smile{transform:translateY(4px) rotate(180deg);transform-box:fill-box;transform-origin:center}
+@keyframes fukuArtFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes hairSway{0%,100%{transform:rotate(0)}50%{transform:rotate(2deg)}}
+@keyframes earTwitch{0%,82%,100%{transform:rotate(0)}86%{transform:rotate(8deg)}90%{transform:rotate(-4deg)}}
+@keyframes armWave{0%,100%{transform:rotate(0)}50%{transform:rotate(-7deg)}}
+@keyframes starBlink{0%,44%,48%,100%{opacity:1}46%{opacity:.15}}
+@keyframes charmSpin{0%,70%{transform:rotate(0)}76%{transform:rotate(12deg)}82%{transform:rotate(-12deg)}88%,100%{transform:rotate(0)}}
+@keyframes ballPulse{50%{opacity:.55;transform:scale(1.12)}}
+@keyframes fukuArtExcited{25%{transform:translateY(-12px) rotate(-3deg)}75%{transform:translateY(-12px) rotate(3deg)}}
+@keyframes fukuArtWorry{25%{transform:translateX(-7px) rotate(-3deg)}75%{transform:translateX(7px) rotate(3deg)}}
+@keyframes fukuArtBow{50%{transform:translateY(18px) rotate(2deg)}}
+@keyframes fukuArtSurprise{50%{transform:scale(1.09)}}
+@media(max-width:720px){.fuku-character{width:190px;height:242px}.fuku-svg{width:190px;height:242px}.fuku-stage{min-height:350px}}
+</style>
 </head>
 <body>
 <div id="stars"></div>
@@ -39,7 +73,44 @@
       <div class="stage-backdrop"><span>🍀</span><span>✦</span><span>🔮</span><span>✦</span><span>🍀</span></div>
       <div class="fuku-reaction"><span id="fukuReactionIcon">🔮</span><b>FUKUKITARU IS CONSULTING...</b></div>
       <div class="fuku-bubble" id="fukuBubble"><strong>MATIKANEFUKUKITARU</strong><span id="fukuBubbleText">Oh! A visitor! I sensed your luck approaching! Let's see what the stars have to say!</span></div>
-      <div class="fuku-character" aria-hidden="true"><div class="fuku-hair"></div><div class="fuku-head"><i class="fuku-eye left"></i><i class="fuku-eye right"></i><i class="fuku-mouth"></i></div><div class="fuku-body"></div><div class="fuku-arm left"></div><div class="fuku-arm right"></div></div>
+      <div class="fuku-character" aria-hidden="true">
+        <svg class="fuku-svg" viewBox="0 0 230 292" role="img" aria-label="Stylized animated Matikanefukukitaru fortune teller">
+          <g class="fuku-float">
+            <!-- flowing dark hair and horse ears -->
+            <path class="hair-swish" d="M57 91 C35 115 31 166 48 211 C57 235 77 247 88 249 L72 273 C62 279 49 271 45 253 C37 221 25 184 34 140 C39 112 46 89 57 72 Z" fill="#302238" stroke="#24172e" stroke-width="4"/>
+            <path class="hair-swish" d="M173 91 C195 115 199 166 182 211 C173 235 153 247 142 249 L158 273 C168 279 181 271 185 253 C193 221 205 184 196 140 C191 112 184 89 173 72 Z" fill="#302238" stroke="#24172e" stroke-width="4"/>
+            <path class="ear-left" d="M63 76 C47 52 48 28 57 18 C75 25 91 42 91 69 Z" fill="#302238" stroke="#24172e" stroke-width="4"/>
+            <path class="ear-right" d="M167 76 C183 52 182 28 173 18 C155 25 139 42 139 69 Z" fill="#302238" stroke="#24172e" stroke-width="4"/>
+            <path d="M62 57 C57 43 58 35 61 31 C71 38 78 47 81 59 Z" fill="#bd6d86" opacity=".8"/>
+            <path d="M168 57 C173 43 172 35 169 31 C159 38 152 47 149 59 Z" fill="#bd6d86" opacity=".8"/>
+            <!-- face -->
+            <ellipse cx="115" cy="91" rx="58" ry="64" fill="#f7c9a8" stroke="#6b4258" stroke-width="3"/>
+            <path d="M57 82 C60 42 82 23 115 23 C149 23 173 44 174 83 C159 66 141 58 115 57 C88 58 70 66 57 82Z" fill="#302238" stroke="#24172e" stroke-width="4"/>
+            <path d="M71 62 C83 51 91 47 102 45" fill="none" stroke="#47324f" stroke-width="7" stroke-linecap="round"/>
+            <path d="M159 62 C147 51 139 47 128 45" fill="none" stroke="#47324f" stroke-width="7" stroke-linecap="round"/>
+            <!-- star pupils -->
+            <g class="star-eye" fill="#5b4777"><path d="M91 90 l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/><path d="M139 90 l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></g>
+            <circle cx="91" cy="90" r="2.2" fill="#fff"/><circle cx="139" cy="90" r="2.2" fill="#fff"/>
+            <path d="M111 106 Q115 110 119 106" fill="none" stroke="#8d4d58" stroke-width="3" stroke-linecap="round"/>
+            <path class="smile" d="M103 119 Q115 130 127 119" fill="none" stroke="#8d4d58" stroke-width="3" stroke-linecap="round"/>
+            <!-- outfit -->
+            <path d="M67 149 Q115 132 163 149 L177 254 Q115 273 53 254Z" fill="#3d89e9" stroke="#4d365f" stroke-width="4"/>
+            <path d="M70 151 L115 204 L160 151" fill="#fff8ed" stroke="#4d365f" stroke-width="3"/>
+            <path d="M102 190 L115 205 L128 190 L128 255 L102 255Z" fill="#f8a717" opacity=".95"/>
+            <path d="M90 159 L115 184 L140 159" fill="none" stroke="#f8a717" stroke-width="7"/>
+            <path d="M75 174 Q115 191 155 174" fill="none" stroke="#f7d67d" stroke-width="4" opacity=".9"/>
+            <!-- arms -->
+            <g class="arm-left"><path d="M68 167 Q40 176 37 205 Q35 218 48 220 Q61 221 65 207 L82 184Z" fill="#f7c9a8" stroke="#6b4258" stroke-width="3"/><path d="M40 203 Q46 197 53 202" fill="none" stroke="#8d4d58" stroke-width="3"/></g>
+            <g class="arm-right"><path d="M162 167 Q190 176 193 205 Q195 218 182 220 Q169 221 165 207 L148 184Z" fill="#f7c9a8" stroke="#6b4258" stroke-width="3"/><path d="M190 203 Q184 197 177 202" fill="none" stroke="#8d4d58" stroke-width="3"/></g>
+            <!-- fortune charms -->
+            <g class="clover-charm"><circle cx="115" cy="229" r="15" fill="#fff8ed" stroke="#f8a717" stroke-width="3"/><circle cx="109" cy="225" r="5" fill="#6c8750"/><circle cx="121" cy="225" r="5" fill="#6c8750"/><circle cx="109" cy="235" r="5" fill="#6c8750"/><circle cx="121" cy="235" r="5" fill="#6c8750"/></g>
+            <!-- little tail -->
+            <path d="M178 235 Q209 217 197 192 Q222 217 201 245 Q190 258 174 251Z" fill="#302238" stroke="#24172e" stroke-width="4"/>
+            <!-- crystal-ball glow -->
+            <g class="ball-glow"><circle cx="115" cy="272" r="17" fill="#dfefff" opacity=".75"/><circle cx="115" cy="272" r="11" fill="#b58aeb" opacity=".55"/></g>
+          </g>
+        </svg>
+      </div>
       <div class="fuku-table"></div>
     </section>
     <section class="fortune-slip" id="fortuneSlip"><div class="slip-ribbon">今日の運勢 · TODAY'S OMEN</div><div class="slip-inner"><div class="fortune-kanji" id="fortuneGrade">?</div><div class="fortune" id="fortune"><strong>The stars are waiting.</strong><p>Pull your fortune and discover what fate has planned!</p></div><button class="gold big-action" onclick="getFortune()">✨ CONSULT THE STARS ✨</button><button class="tiny-action" onclick="explainCurrentFortune()">WHY DID THIS HAPPEN?</button></div></section>
