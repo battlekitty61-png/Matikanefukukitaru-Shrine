@@ -3,88 +3,80 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Matikanefukukitaru's Fortune Tent 🍀</title>
+<title>Matikanefukukitaru Shrine 🍀</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<style>
-.fuku-stage{max-width:920px;margin:0 auto 24px;min-height:300px;position:relative;border:3px solid #b89fbd;border-radius:28px;background:linear-gradient(180deg,#f1e2f2,#fff8e8 62%,#e8dfd0);overflow:hidden;box-shadow:0 20px 45px #3b245020}
-.fuku-stage:before{content:'🍀  ✦  🔮  ✦  🍀';position:absolute;left:0;right:0;top:12px;text-align:center;color:#8a659e;letter-spacing:10px;opacity:.7}
-.fuku-table{position:absolute;left:8%;right:8%;bottom:0;height:92px;border-radius:20px 20px 0 0;background:linear-gradient(#8a659e,#624271);border:3px solid #4e3768;box-shadow:0 -8px 20px #3b245025;z-index:4}
-.fuku-table:before{content:'🔮';position:absolute;left:50%;top:-50px;transform:translateX(-50%);font-size:3.2rem;filter:drop-shadow(0 5px 5px #0003);animation:crystalFloat 2.8s ease-in-out infinite}
-.fuku-table:after{content:'🍀   🎴   🧿   🍀';position:absolute;left:0;right:0;bottom:22px;text-align:center;font-size:1.35rem;letter-spacing:13px}
-.fuku-character{position:absolute;z-index:3;left:50%;bottom:54px;width:170px;height:225px;transform:translateX(-50%);animation:fukuIdle 3.4s ease-in-out infinite;filter:drop-shadow(0 12px 9px #3b245030)}
-.fuku-head{position:absolute;left:35px;top:8px;width:100px;height:108px;border-radius:48% 48% 45% 45%;background:#f7c9a8;border:3px solid #6b4258;z-index:2}
-.fuku-hair{position:absolute;left:18px;top:0;width:125px;height:115px;border-radius:52% 52% 42% 44%;background:#302238;border:4px solid #24172e;z-index:1}
-.fuku-hair:before{content:'';position:absolute;left:-11px;top:53px;width:28px;height:80px;border-radius:60% 30% 50% 50%;background:#302238;transform:rotate(10deg)}
-.fuku-hair:after{content:'';position:absolute;right:-9px;top:53px;width:28px;height:80px;border-radius:30% 60% 50% 50%;background:#302238;transform:rotate(-10deg)}
-.fuku-eye{position:absolute;top:53px;width:11px;height:16px;border-radius:50%;background:#5b4777;z-index:4;box-shadow:0 0 0 2px #fff6}
-.fuku-eye.left{left:23px}.fuku-eye.right{right:23px}.fuku-mouth{position:absolute;left:43px;top:79px;width:15px;height:8px;border-bottom:3px solid #8d4d58;border-radius:0 0 50% 50%;z-index:4}
-.fuku-body{position:absolute;left:23px;bottom:0;width:124px;height:130px;border-radius:55px 55px 18px 18px;background:#fff8ed;border:3px solid #6b4258;z-index:1}
-.fuku-body:before{content:'🍀';position:absolute;left:49px;top:17px;font-size:1.55rem}.fuku-arm{position:absolute;bottom:31px;width:54px;height:22px;border-radius:20px;background:#f7c9a8;border:3px solid #6b4258;z-index:5}.fuku-arm.left{left:3px;transform:rotate(20deg);transform-origin:right center}.fuku-arm.right{right:3px;transform:rotate(-20deg);transform-origin:left center}
-.fuku-bubble{position:absolute;right:7%;top:62px;max-width:310px;padding:16px 19px;border:2px solid #b89fbd;border-radius:20px;background:#fffdf7;color:#29182f;box-shadow:0 9px 22px #3b245018;z-index:6;font-weight:700;line-height:1.35;animation:bubbleIn .7s ease both}.fuku-bubble:after{content:'';position:absolute;bottom:-12px;left:30px;border:12px solid transparent;border-top-color:#b89fbd;border-bottom:0}.fuku-bubble strong{display:block;color:#6f4b87;font-size:.72rem;letter-spacing:1.5px;margin-bottom:5px}
-.fuku-reaction{position:absolute;left:7%;top:72px;color:#6f4b87;font-size:.78rem;font-weight:700;letter-spacing:1px;text-align:center;max-width:190px}.fuku-reaction span{display:block;font-size:2rem;margin-bottom:5px;animation:reactionSpark 1.8s ease-in-out infinite}
-.fuku-stage.good .fuku-character{animation:fukuExcited .7s ease-in-out 2}.fuku-stage.good .fuku-bubble{background:#fff4bf}.fuku-stage.bad .fuku-character{animation:fukuWorry .45s ease-in-out 3}.fuku-stage.bad .fuku-bubble{background:#eee5f4}.fuku-stage.summon .fuku-character{animation:fukuBow .8s ease-in-out}.fuku-stage.summon .fuku-bubble{background:#eaf4e5}.fuku-stage.surprise .fuku-character{animation:fukuSurprise .6s ease-in-out 2}.fuku-stage.surprise .fuku-bubble{background:#f8e3ea}
-@keyframes fukuIdle{50%{transform:translateX(-50%) translateY(-5px)}}@keyframes fukuExcited{25%{transform:translateX(-50%) translateY(-13px) rotate(-3deg)}75%{transform:translateX(-50%) translateY(-13px) rotate(3deg)}}@keyframes fukuWorry{25%{transform:translateX(-54%) rotate(-4deg)}75%{transform:translateX(-46%) rotate(4deg)}}@keyframes fukuBow{50%{transform:translateX(-50%) translateY(16px) rotate(2deg)}}@keyframes fukuSurprise{50%{transform:translateX(-50%) scale(1.08)}}@keyframes crystalFloat{50%{transform:translateX(-50%) translateY(-7px)}}@keyframes bubbleIn{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}@keyframes reactionSpark{50%{transform:scale(1.18) rotate(8deg)}}
-@media(max-width:760px){.fuku-stage{min-height:330px}.fuku-character{left:38%;transform:translateX(-50%) scale(.88);transform-origin:center bottom}.fuku-stage.good .fuku-character{transform:translateX(-50%) scale(.88)}.fuku-bubble{right:4%;top:55px;max-width:210px;font-size:.82rem}.fuku-reaction{left:3%;top:235px;max-width:130px}.fuku-table{left:4%;right:4%}}
-</style>
 </head>
 <body>
 <div id="stars"></div>
-<header class="hero tent-top">
+<header class="hero">
   <div class="tent-canopy"><span>🍀</span><span>🔮</span><span>🍀</span><span>🔮</span><span>🍀</span></div>
   <div class="sigils" aria-label="mysterious sigils">🔮　🐴　🍀　✨</div>
   <div class="lantern-row"><span>🏮</span><span>✦</span><span>🏮</span></div>
-  <h1>Matikanefukukitaru's Fortune Tent</h1>
-  <p>A completely legitimate source of fortune, destiny, charms, and questionable advice.</p>
+  <h1>Matikanefukukitaru Shrine</h1>
+  <p>Fortune, fate, and a little bit of chaos!</p>
 </header>
 <main>
-<section class="hero-card fortune-tent-card">
-  <div class="hero-copy"><span class="eyebrow">🔮 WELCOME, FORTUNE SEEKER 🔮</span><h2>Have you come to consult the stars?</h2><p>Step inside! Matikanefukukitaru has prepared an extremely professional fortune-telling experience. Please ignore any suspicious omens.</p><button class="primary big-action" onclick="getFortune()">🔮 LET FUKUKITARU DECIDE MY FATE</button></div>
-  <div class="tent-charm-stack" aria-label="fortune tent charms"><div>🍀</div><div>🧿</div><div>🎴</div></div>
-</section>
-
-<section class="fuku-stage" id="fukuStage" aria-label="Fukukitaru fortune table">
-  <div class="fuku-reaction"><span id="fukuReactionIcon">🔮</span><b>FUKUKITARU IS CONSULTING...</b></div>
-  <div class="fuku-bubble" id="fukuBubble"><strong>MATIKANEFUKUKITARU</strong><span id="fukuBubbleText">Welcome! Please sit down! The stars have been expecting you!</span></div>
-  <div class="fuku-character" aria-hidden="true"><div class="fuku-hair"></div><div class="fuku-head"><i class="fuku-eye left"></i><i class="fuku-eye right"></i><i class="fuku-mouth"></i></div><div class="fuku-body"></div><div class="fuku-arm left"></div><div class="fuku-arm right"></div></div>
-  <div class="fuku-table"></div>
-</section>
-
-<div class="fortune-slip" id="fortuneSlip"><div class="slip-ribbon">今日の運勢 · TODAY'S OMEN</div><div class="slip-inner"><div class="fortune-kanji" id="fortuneGrade">?</div><div class="fortune" id="fortune"><strong>The stars are waiting.</strong><p>Pull your fortune and discover what fate has planned!</p></div><button class="gold big-action" onclick="getFortune()">✨ CONSULT THE STARS ✨</button><button class="tiny-action" onclick="explainCurrentFortune()">WHY DID THIS HAPPEN?</button></div></div>
-
-<div class="grid">
-<section class="card tent-panel summon-card"><div class="section-title"><span class="plush-icon"><img src="{{ url_for('static', filename='images.jpeg') }}" alt="Shiraoki-sama plush" onerror="plushImageFallback(this)"></span><div><h2>Summon Shiraoki-sama</h2><small>Perform the totally normal ritual.</small></div></div><div id="plushZone" class="plush-zone"><div class="plush-placeholder">Shiraoki-sama is currently somewhere else.</div></div><button class="gold full" onclick="summon()">✨ SUMMON SHIRAOKI-SAMA</button></section>
-<section class="card tent-panel luck-card"><div class="section-title"><span>🍀</span><div><h2>Fukukitaru's Luckometer™</h2><small>Scientifically questionable. Spiritually precise.</small></div></div><div class="luck-number" id="luckNumber">--%</div><div class="luck-bar"><div id="luckFill"></div></div><p id="luckMessage">The stars are calculating...</p><div class="luck-confidence">Measurement confidence: <strong id="luckConfidence">???</strong></div></section>
-<section class="card tent-panel nyaa-card"><div class="section-title"><span>🐱</span><div><h2>Nyaa-san's Omens</h2><small>Her judgment is final. Probably.</small></div></div><div id="nyaa" class="charm-display"><div class="nyaa-cat" onclick="petNyaa()">🐱</div><p id="nyaaText">Nyaa-san is watching.</p></div><button class="ghost full" onclick="petNyaa()">🐾 ASK NYAA-SAN</button></section>
-<section class="card tent-panel daruma-card"><div class="section-title"><span>🪆</span><div><h2>Daruma of Determination</h2><small>Give it an eye. Do not ask why.</small></div></div><div id="daruma" class="daruma" onclick="paintDaruma()">🪆</div><p id="darumaText">The daruma waits patiently.</p><button class="primary full" onclick="paintDaruma()">🎴 MAKE A WISH</button></section>
-<section class="card tent-panel gods-card"><div class="section-title"><span>🎴</span><div><h2>Seven Gods of Fortune</h2><small>Choose one card. Trust your instincts.</small></div></div><div id="fortuneCards" class="fortune-cards"></div><div id="godResult" class="god-result">The cards await your hand.</div></section>
-<section class="card tent-panel camera-card"><div class="section-title"><span>📷</span><div><h2>The Cursed Camera</h2><small>Fukukitaru strongly recommends caution.</small></div></div><div class="camera-box"><div class="camera-lens">◉</div><p id="cameraText">Something about this camera feels... spiritually complicated.</p></div><div class="actions"><button class="primary" onclick="cursedCamera('photo')">📸 TAKE THE PICTURE</button><button class="ghost" onclick="cursedCamera('run')">🏃 RUN AWAY</button></div></section>
-<section class="card tent-panel race-card"><div class="section-title"><span>🏇</span><div><h2>Fukukitaru's Racing Destiny</h2><small>The stars have opinions about the final stretch.</small></div></div><div class="race-track"><div class="race-lane"><span>🏇</span><i></i><b>FINISH</b></div></div><div class="race-stats"><div><small>Running Style</small><strong>Late Surge</strong></div><div><small>Favored</small><strong>Medium / Long</strong></div><div><small>Today's Omen</small><strong id="raceOmen">???</strong></div></div></section>
-<section class="card tent-panel chat-card"><div class="section-title"><span>💬</span><div><h2>Ask Fukukitaru</h2><small>Ask anything! I shall consult the stars!</small></div></div><div id="messages" class="messages" aria-live="polite"><div class="msg bot">Hello! I am Matikanefukukitaru! Ask me anything! I shall consult the stars! Probably!</div></div><div id="aiLoader" class="ai-loader" aria-hidden="true" role="status"><div class="spinner" aria-hidden="true"></div><span class="loader-text">Fukukitaru is consulting the stars…</span></div><div class="chatbar"><input id="chatInput" maxlength="1000" placeholder="Ask Fukukitaru something..." onkeydown="if(event.key==='Enter')sendChat()"><button id="sendButton" class="primary" onclick="sendChat()">ASK!</button></div></section>
-<section class="card tent-panel guestbook-card"><div class="section-title"><span>📜</span><div><h2>Guest Book: Reviews of the Tent</h2><small>Visitors have opinions. The stars have concerns.</small></div></div><div class="reviews"><article class="review doto"><div class="review-avatar">🐴</div><div><strong>Meisho Doto</strong><span class="review-role">Very nervous visitor</span><p>“U-Um... Fukukitaru's fortune was really nice! I was just a little worried when the crystal ball started glowing... b-but it was probably fine!”</p><small>★ ★ ★ ★ ☆ · Would visit again after calming down.</small></div></article><article class="review palmer"><div class="review-avatar">🏄</div><div><strong>Mejiro Palmer</strong><span class="review-role">Definitely came for the vibes</span><p>“Yo, this tent is actually pretty chill! Got a fortune, got a charm, almost got recruited into a mystery ritual. Ten outta ten atmosphere!”</p><small>★ ★ ★ ★ ★ · The lanterns are fire.</small></div></article><article class="review helios"><div class="review-avatar">💖</div><div><strong>Daitaku Helios</strong><span class="review-role">Maximum energy consultant</span><p>“FUKUKITARU'S TENT IS SO HYPE!!! 🔥🔮✨ Fortune says GOOD VIBES ONLY! We gotta do this again like, RIGHT NOW!”</p><small>★ ★ ★ ★ ★ · Would bring the whole crew.</small></div></article></div><p class="review-note">Fan-made character-voice homages inspired by their personalities, not official quotations.</p></section>
-<section class="card tent-panel achievements-card"><div class="section-title"><span>🏆</span><div><h2>Omens & Achievements</h2><small id="achievementCount">0 / 15 discovered</small></div></div><div id="achievements" class="achievements"></div></section>
-<section class="card tent-panel history-card"><div class="section-title"><span>📜</span><div><h2>Fortune History</h2><small>Your browser remembers your destiny.</small></div></div><div id="history" class="history"></div><button class="ghost" onclick="clearHistory()">FORGET MY DESTINY</button></section>
-</div>
-<section class="card tent-panel classified-card" id="cultist"><span class="eyebrow">CLASSIFIED OMEN</span><h2>🍀 Fukukitaru's Highly Official Cultist Mode</h2><p>Click the four sigils at the top of the tent in the correct mysterious order.</p><p id="cultStatus">The spirits are watching...</p></section>
-<section class="card tent-panel secret-card" id="secretCabinet"><span class="eyebrow">???</span><h2>🗄️ The Suspicious Charm Cabinet</h2><p id="cabinetText">There is definitely nothing interesting here.</p><button class="ghost" onclick="openCabinet()">DO NOT OPEN THE CABINET</button></section>
+  <aside class="sidebar" aria-label="Shrine navigation">
+    <div class="shrine-sign"><span>🍀</span><strong>Matikanefukukitaru<br>Fortune Tent</strong><small>おみくじ · OMikuji</small></div>
+    <nav>
+      <a href="#fortuneSlip">🔮 <span>Fortune Machine</span><small>おみくじ</small></a>
+      <a href="#shiraoki">🧸 <span>Shiraoki-sama</span><small>しらおきさま</small></a>
+      <a href="#nyaa">🐱 <span>Nyaa-san</span><small>にゃーさん</small></a>
+      <a href="#darumaCard">🪆 <span>Daruma</span><small>だるま</small></a>
+      <a href="#gods">🎴 <span>Seven Gods</span><small>七福神</small></a>
+      <a href="#racing">🏇 <span>Racing Destiny</span><small>レースの運命</small></a>
+      <a href="#guestbook">📜 <span>Guest Book</span><small>来訪者の記録</small></a>
+      <a href="#achievements">🏆 <span>Achievements</span><small>実績</small></a>
+    </nav>
+    <div class="sidebar-note">🍀 <b>Today's charm</b><br><span>Trust the final stretch.</span></div>
+  </aside>
+  <section class="main-column">
+    <section class="hero-card fortune-tent-card">
+      <div class="hero-copy"><span class="eyebrow">🔮 WELCOME, FORTUNE SEEKER 🔮</span><h2>Have you come to consult the stars?</h2><p>Step inside! Fukukitaru has prepared an extremely professional fortune-telling experience. Please ignore any suspicious omens.</p><button class="primary big-action" onclick="getFortune()">🔮 LET FUKUKITARU DECIDE MY FATE</button></div>
+      <div class="tent-charm-stack" aria-label="fortune tent charms"><div>🍀</div><div>🧿</div><div>🎴</div></div>
+    </section>
+    <section class="fuku-stage" id="fukuStage" aria-label="Fukukitaru fortune table">
+      <div class="stage-backdrop"><span>🍀</span><span>✦</span><span>🔮</span><span>✦</span><span>🍀</span></div>
+      <div class="fuku-reaction"><span id="fukuReactionIcon">🔮</span><b>FUKUKITARU IS CONSULTING...</b></div>
+      <div class="fuku-bubble" id="fukuBubble"><strong>MATIKANEFUKUKITARU</strong><span id="fukuBubbleText">Oh! A visitor! I sensed your luck approaching! Let's see what the stars have to say!</span></div>
+      <div class="fuku-character" aria-hidden="true"><div class="fuku-hair"></div><div class="fuku-head"><i class="fuku-eye left"></i><i class="fuku-eye right"></i><i class="fuku-mouth"></i></div><div class="fuku-body"></div><div class="fuku-arm left"></div><div class="fuku-arm right"></div></div>
+      <div class="fuku-table"></div>
+    </section>
+    <section class="fortune-slip" id="fortuneSlip"><div class="slip-ribbon">今日の運勢 · TODAY'S OMEN</div><div class="slip-inner"><div class="fortune-kanji" id="fortuneGrade">?</div><div class="fortune" id="fortune"><strong>The stars are waiting.</strong><p>Pull your fortune and discover what fate has planned!</p></div><button class="gold big-action" onclick="getFortune()">✨ CONSULT THE STARS ✨</button><button class="tiny-action" onclick="explainCurrentFortune()">WHY DID THIS HAPPEN?</button></div></section>
+    <div class="feature-heading"><span>🍀</span><div><h2>Matikanefukukitaru's Features</h2><small>Fortune-telling, racing, and a whole lot of chaos!</small></div></div>
+    <section class="feature-strip">
+      <article class="feature-tile" onclick="getFortune()"><b>🔮 Fortune Machine</b><span>Draw your fortune from the stars!</span><button>Try It!</button></article>
+      <article class="feature-tile" id="shiraoki" onclick="summon()"><b>🧸 Shiraoki-sama</b><span>The sacred plush brings good luck!</span><button>Summon</button></article>
+      <article class="feature-tile" onclick="petNyaa()"><b>🐱 Nyaa-san's Omens</b><span>Nyaa-san judges your fate.</span><button>Ask Nyaa</button></article>
+      <article class="feature-tile" onclick="paintDaruma()"><b>🪆 Daruma of Determination</b><span>Choose a wish and give it an eye.</span><button>Make a Wish</button></article>
+      <article class="feature-tile" onclick="chooseGod(0,this)"><b>🎴 Seven Gods of Fortune</b><span>Choose your fortune card.</span><button>Draw a Card</button></article>
+      <article class="feature-tile" onclick="cursedCamera('photo')"><b>📷 Cursed Camera</b><span>A photo of your fate...</span><button>Take a Picture</button></article>
+      <article class="feature-tile" onclick="openCabinet()"><b>🗄️ Suspicious Cabinet</b><span>You really shouldn't open this...</span><button>Open (Maybe)</button></article>
+    </section>
+    <div class="content-grid">
+      <section class="card tent-panel summon-card"><div class="section-title"><span class="plush-icon"><img src="{{ url_for('static', filename='images.jpeg') }}" alt="Shiraoki-sama plush" onerror="plushImageFallback(this)"></span><div><h2>Summon Shiraoki-sama</h2><small>Perform the totally normal ritual.</small></div></div><div id="plushZone" class="plush-zone"><div class="plush-placeholder">Shiraoki-sama is currently somewhere else.</div></div><button class="gold full" onclick="summon()">✨ SUMMON SHIRAOKI-SAMA</button></section>
+      <section class="card tent-panel nyaa-card"><div class="section-title"><span>🐱</span><div><h2>Nyaa-san's Omens</h2><small>Her judgment is final. Probably.</small></div></div><div id="nyaa" class="charm-display"><div class="nyaa-cat" onclick="petNyaa()">🐱</div><p id="nyaaText">Nyaa-san is watching.</p></div><button class="ghost full" onclick="petNyaa()">🐾 ASK NYAA-SAN</button></section>
+      <section class="card tent-panel daruma-card" id="darumaCard"><div class="section-title"><span>🪆</span><div><h2>Daruma of Determination</h2><small>Give it an eye. Do not ask why.</small></div></div><div id="daruma" class="daruma" onclick="paintDaruma()">🪆</div><p id="darumaText">The daruma waits patiently.</p><button class="primary full" onclick="paintDaruma()">🎴 MAKE A WISH</button></section>
+      <section class="card tent-panel gods-card" id="gods"><div class="section-title"><span>🎴</span><div><h2>Seven Gods of Fortune</h2><small>Choose one card. Trust your instincts.</small></div></div><div id="fortuneCards" class="fortune-cards"></div><div id="godResult" class="god-result">The cards await your hand.</div></section>
+      <section class="card tent-panel camera-card"><div class="section-title"><span>📷</span><div><h2>The Cursed Camera</h2><small>Fukukitaru strongly recommends caution.</small></div></div><div class="camera-box"><div class="camera-lens">◉</div><p id="cameraText">Something about this camera feels... spiritually complicated.</p></div><div class="actions"><button class="primary" onclick="cursedCamera('photo')">📸 TAKE THE PICTURE</button><button class="ghost" onclick="cursedCamera('run')">🏃 RUN AWAY</button></div></section>
+      <section class="card tent-panel race-card" id="racing"><div class="section-title"><span>🏇</span><div><h2>Fukukitaru's Racing Destiny</h2><small>The stars have opinions about the final stretch.</small></div></div><div class="race-track"><div class="race-lane"><span>🏇</span><b>FINISH</b></div></div><div class="race-stats"><div><small>Running Style</small><strong>Late Surge</strong></div><div><small>Favored</small><strong>Medium / Long</strong></div><div><small>Today's Omen</small><strong id="raceOmen">???</strong></div></div></section>
+      <section class="card tent-panel chat-card"><div class="section-title"><span>💬</span><div><h2>Ask Fukukitaru</h2><small>Ask anything! I shall consult the stars!</small></div></div><div id="messages" class="messages" aria-live="polite"><div class="msg bot">Hello! I am Matikanefukukitaru! Ask me anything! I shall consult the stars! Probably!</div></div><div id="aiLoader" class="ai-loader" aria-hidden="true" role="status"><div class="spinner"></div><span class="loader-text">Fukukitaru is consulting the stars…</span></div><div class="chatbar"><input id="chatInput" maxlength="1000" placeholder="Ask Fukukitaru something..." onkeydown="if(event.key==='Enter')sendChat()"><button id="sendButton" class="primary" onclick="sendChat()">ASK!</button></div></section>
+    </div>
+    <section class="card classified-card" id="secretCabinet"><span class="eyebrow">CLASSIFIED SHRINE MATERIAL</span><h2>🗄️ The Suspicious Cabinet</h2><p id="cabinetText">It is locked. This is probably for the best.</p></section>
+    <section class="card classified-card" id="cultist"><span class="eyebrow">CLASSIFIED</span><h2>🍀 Fukukitaru's Highly Official Cultist Mode</h2><p>Click the four little sigils at the top of the page in the correct mysterious order.</p><p id="cultStatus">The spirits are watching...</p></section>
+  </section>
+  <aside class="right-rail">
+    <section class="card rail-card luck-card"><div class="rail-title"><span>🍀</span><div><h2>Today's Luck</h2><small>今日の運勢</small></div></div><div class="luck-number" id="luckNumber">--%</div><div class="luck-bar"><div id="luckFill"></div></div><p id="luckMessage">The stars are calculating...</p><div class="luck-confidence">Confidence: <strong id="luckConfidence">???</strong></div></section>
+    <section class="card rail-card visitor-card" id="guestbook"><div class="rail-title"><span>👋</span><div><h2>Recent Visitors</h2><small>来訪者の記録</small></div></div><div class="visitor-list"><article><div class="visitor-art">🐴</div><div><b>Meisho Doto</b><p>“U-Um... I feel a little more brave now...”</p><small>Fan-made character-voice homage</small></div></article><article><div class="visitor-art">🏄</div><div><b>Mejiro Palmer</b><p>“Hehe! This is actually pretty fun! Let's do it again sometime!”</p><small>Fan-made character-voice homage</small></div></article><article><div class="visitor-art">💖</div><div><b>Daitaku Helios</b><p>“WOOOO! This is so cool! You're awesome!”</p><small>Fan-made character-voice homage</small></div></article></div><div class="visitor-note">More visitors... ✦</div></section>
+    <section class="card rail-card achievements-card" id="achievements"><div class="rail-title"><span>🏆</span><div><h2>Achievements</h2><small id="achievementCount">0 / 15 discovered</small></div></div><div class="achievements"></div></section>
+    <section class="card rail-card events-card"><div class="rail-title"><span>✨</span><div><h2>Daily Events</h2><small>Fukukitaru's comment</small></div></div><ul><li>✨ “I sense something!”</li><li>🐱 “Nyaa-san is watching.”</li><li>🍀 A mysterious clover appeared.</li><li>🌟 “The stars have spoken!”</li><li>🏇 “You should probably keep scrolling.”</li></ul></section>
+    <section class="card rail-card history-card"><div class="rail-title"><span>📜</span><div><h2>Fortune History</h2><small>Your past omens</small></div></div><div id="history" class="history"></div><button class="ghost full" onclick="clearHistory()">FORGET MY DESTINY</button></section>
+  </aside>
 </main>
-<footer>Made with excessive admiration for Matikanefukukitaru. 🍀 · The stars accept no responsibility for your decisions.</footer>
+<footer>Made with excessive admiration for Matikanefukukitaru. 🍀 · Fortune is fictional and the stars accept no responsibility.</footer>
 <div id="toast" class="toast"></div>
-<div id="plushOverlay" class="plush-overlay" onclick="hidePlush()"><div class="plush-popup" onclick="event.stopPropagation()"><button class="close" onclick="hidePlush()">×</button><div class="big-plush"><img src="{{ url_for('static', filename='images.jpeg') }}" alt="Shiraoki-sama plush" onerror="plushImageFallback(this)"></div><h2>SHIRAOKI-SAMA HAS ARRIVED.</h2><p>The ritual was successful. The plush has judged you favorably.</p></div></div>
+<div id="plushOverlay" class="plush-overlay" onclick="hidePlush()"><div class="plush-popup" onclick="event.stopPropagation()"><button class="close" onclick="hidePlush()">×</button><div class="big-plush"><img class="summon-image-pop" src="{{ url_for('static', filename='images.jpeg') }}" alt="Shiraoki-sama plush" onerror="plushImageFallback(this)"></div><h2>SHIRAOKI-SAMA HAS ARRIVED.</h2><p>The ritual was successful. The plush has judged you favorably.</p></div></div>
 <div id="forbidden" class="forbidden"><div><div class="forbidden-symbol">✦</div><h2>YOU WERE NOT SUPPOSED TO SEE THIS.</h2><p>LUCK LEVEL: 9999</p><p>The stars have noticed you.</p><button class="primary" onclick="closeForbidden()">ACCEPT YOUR DESTINY</button></div></div>
 <script src="{{ url_for('static', filename='app.js') }}"></script>
-<script>
-(function(){
- const stage=document.getElementById('fukuStage'), bubble=document.getElementById('fukuBubbleText'), icon=document.getElementById('fukuReactionIcon');
- window.fukuReact=function(kind,text,emoji){stage.classList.remove('good','bad','summon','surprise');void stage.offsetWidth;stage.classList.add(kind||'');bubble.textContent=text;icon.textContent=emoji||'🔮'};
- const og=window.getFortune;if(og)window.getFortune=async function(){fukuReact('','The stars are aligning... please remain calm!','🔮');await og();const g=document.getElementById('fortuneGrade')?.innerText||'';if(g.includes('凶'))fukuReact('bad','AH! A bad omen! But do not panic! We can overcome it!','😨');else if(g.includes('大吉'))fukuReact('good','I KNEW IT! The stars are absolutely overflowing with good fortune!','✨');else fukuReact('good','Aha! The stars have given us a path forward!','🍀')};
- const os=window.summon;if(os)window.summon=function(){fukuReact('summon','SHIRAOKI-SAMA?! Please, bless our visitor!','🧸');os()};
- const on=window.petNyaa;if(on)window.petNyaa=function(){on();fukuReact('surprise','Nyaa-san has spoken! We must take this omen very seriously!','🐱')};
- const od=window.paintDaruma;if(od)window.paintDaruma=function(){od();fukuReact('good','A wish! A determination! This is wonderful!','🪆')};
- const oc=window.cursedCamera;if(oc)window.cursedCamera=function(c){oc(c);fukuReact(c==='photo'?'surprise':'good',c==='photo'?'THE CAMERA SAW SOMETHING! I KNEW IT!':'A wise retreat! Sometimes avoiding an omen is the lucky choice!','📷')};
- const ob=window.openCabinet;if(ob)window.openCabinet=function(){ob();fukuReact('bad','WHY DID YOU OPEN THAT?! I specifically labeled it suspicious!','😱')};
- const odg=window.chooseGod;if(odg)window.chooseGod=function(i,b){odg(i,b);fukuReact('good','The cards have chosen! Or... perhaps you chose them. Either way, it is destiny!','🎴')};
- setTimeout(()=>fukuReact('','Oh! A visitor! I sensed your luck approaching!','🍀'),900);
-})();
-</script>
 </body>
 </html>
