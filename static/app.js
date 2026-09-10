@@ -13,6 +13,17 @@ const ACHIEVEMENTS = [
 
 // Default plush image path (change this file under static/ to replace the default)
 const DEFAULT_PLUSH_SRC = "/static/images.jpeg";
+const RAW_PLUSH_SRC = "https://raw.githubusercontent.com/battlekitty61-png/Matikanefukukitaru-Shrine/main/static/images.jpeg";
+
+function plushImageFallback(img){
+  if(img.dataset.fallback) {
+    img.style.display="none";
+    img.parentElement.classList.add("fallback");
+    return;
+  }
+  img.dataset.fallback="1";
+  img.src=RAW_PLUSH_SRC+"?v=1";
+}
 
 let state = JSON.parse(localStorage.getItem("fukukitaru_state") || "{}");
 Object.assign(state,{fortunes:0,chats:0,summons:0,plush:0,suspicious:false,rare:false,forbidden:false,sessions:0},state);
@@ -61,7 +72,11 @@ function summon(){
   state.summons++; state.plush++;
   document.getElementById("plushOverlay").classList.add("show");
   const zone=document.getElementById("plushZone");
-  zone.innerHTML = `<div class="plush-mini"><img src="${DEFAULT_PLUSH_SRC}" alt="Matikanefukukitaru plush" onerror="this.style.display='none';this.parentElement.classList.add('fallback')"></div>`;
+  zone.innerHTML = `<div class="plush-mini"><img src="${DEFAULT_PLUSH_SRC}" alt="Matikanefukukitaru plush" onerror="plushImageFallback(this)"></div>`;
+  const big=document.querySelector(".big-plush");
+  if(big){
+    big.innerHTML=`<img src="${DEFAULT_PLUSH_SRC}" alt="Matikanefukukitaru plush" onerror="plushImageFallback(this)">`;
+  }
   save(); unlockCheck(before);
 }
 function hidePlush(){document.getElementById("plushOverlay").classList.remove("show")} 
