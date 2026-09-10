@@ -30,7 +30,7 @@
   <div class="actions"><button class="primary" onclick="getFortune()">CONSULT THE STARS</button><button class="ghost" onclick="suspiciousButton()">DO NOT PRESS THIS</button></div>
 </section>
 <section class="card summon-card">
-  <div class="section-title"><span class="plush-icon"><img src="{{ url_for('static', filename='images.jpeg') }}" alt="Shiraoki-sama plush"></span><div><h2>Summon Shiraoki-sama</h2><small>Perform the totally normal ritual.</small></div></div>
+  <div class="section-title"><span class="plush-icon"><img src="{{ url_for('static', filename='images.jpeg') }}" alt="Shiraoki-sama plush" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='https://raw.githubusercontent.com/battlekitty61-png/Matikanefukukitaru-Shrine/main/static/images.jpeg?v=1'}else{this.style.display='none';this.parentElement.classList.add('fallback')}"></span><div><h2>Summon Shiraoki-sama</h2><small>Perform the totally normal ritual.</small></div></div>
   <div id="plushZone" class="plush-zone"><div class="plush-placeholder">Shiraoki-sama is currently somewhere else.</div></div>
   <button class="gold full" onclick="summon()">✨ SUMMON SHIRAOKI-SAMA</button>
 </section>
@@ -55,7 +55,7 @@
 </main>
 <footer>Made with excessive admiration for Matikanefukukitaru. 🍀</footer>
 <div id="toast" class="toast"></div>
-<div id="plushOverlay" class="plush-overlay" onclick="hidePlush()"><div class="plush-popup" onclick="event.stopPropagation()"><button class="close" onclick="hidePlush()">×</button><div class="big-plush"><img src="{{ url_for('static', filename='images.jpeg') }}" alt="Matikanefukukitaru plush" onerror="this.style.display='none';this.parentElement.classList.add('fallback')"></div><h2>SHIRAOKI-SAMA HAS ARRIVED.</h2><p>The ritual was successful. The plush has judged you favorably.</p></div></div>
+<div id="plushOverlay" class="plush-overlay" onclick="hidePlush()"><div class="plush-popup" onclick="event.stopPropagation()"><button class="close" onclick="hidePlush()">×</button><div class="big-plush"><img src="{{ url_for('static', filename='images.jpeg') }}" alt="Matikanefukukitaru plush" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='https://raw.githubusercontent.com/battlekitty61-png/Matikanefukukitaru-Shrine/main/static/images.jpeg?v=1'}else{this.style.display='none';this.parentElement.classList.add('fallback')}"></div><h2>SHIRAOKI-SAMA HAS ARRIVED.</h2><p>The ritual was successful. The plush has judged you favorably.</p></div></div>
 <div id="forbidden" class="forbidden"><div><div class="forbidden-symbol">✦</div><h2>YOU WERE NOT SUPPOSED TO SEE THIS.</h2><p>LUCK LEVEL: 9999</p><p>The stars have noticed you.</p><button class="primary" onclick="closeForbidden()">ACCEPT YOUR DESTINY</button></div></div>
 <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
